@@ -1,0 +1,36 @@
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastro de Esquemas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Cadastro de Esquemas</h1>
+
+  <form id="form-cadastro" enctype="multipart/form-data">
+    <input type="text" id="marca" name="marca" placeholder="Marca" required><br>
+    <input type="number" id="cv" name="cv" placeholder="CV" required><br> <!-- ✅ Trocado para type="number" -->
+    <input type="text" id="voltagem" name="voltagem" placeholder="Voltagem" required><br>
+    <input type="text" id="tensao" name="tensao" placeholder="Tensão" required><br>
+
+    <select id="tipoLigacao" name="tipoLigacao" required>
+      <option value="">Selecione o tipo de ligação</option>
+      <option value="monofasico">Monofásico</option> <!-- ✅ value em minúsculo como no schema -->
+      <option value="trifasico">Trifásico</option>   <!-- ✅ value em minúsculo como no schema -->
+    </select><br>
+
+    <textarea id="observacoes" name="observacoes" placeholder="Observações" rows="4"></textarea><br>
+
+    <input type="file" id="imagem" name="imagem" accept="image/*" required><br><br>
+
+    <button type="submit">Cadastrar</button>
+    <a href="./listar.html"><button type="button">Ir para Listar</button></a>
+  </form>
+
+  <script src="main.js"></script>
+</body>
+</html>
