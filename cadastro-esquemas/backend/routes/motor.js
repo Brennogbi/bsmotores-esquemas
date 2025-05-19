@@ -2,6 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const Motor = require('../models/Motor');
 const router = express.Router();
+const fs = require('fs'); // ✅ Necessário para deletar arquivos
+const path = require('path'); // ✅ Necessário para construir o caminho da imagem
 
 // 📁 Configuração do multer para salvar imagem na pasta /uploads
 const storage = multer.diskStorage({
@@ -59,6 +61,28 @@ router.get('/buscar', async (req, res) => {
     res.json(motores);
   } catch (erro) {
     res.status(500).json({ erro: 'Erro ao buscar motores', detalhe: erro.message });
+  }
+});
+
+// ✅ ROTA: DELETAR ESQUEMA POR ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const esquema = await Motor.findById(req.params.id);
+    if (!esquema) {
+      return res.status(404).json({ message: 'Esquema não encontrado' });
+    }
+
+    // ✅ Apaga imagem do disco se existir
+    const imagemPath = path.join(__dirname, '..', 'uploads', esquema.imagem);
+    if (fs.existsSync(imagemPath)) {
+      fs.unlinkSync(imagemPath);
+    }
+
+    await Motor.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Esquema deletado com sucesso' });
+  } catch (err) {
+    console.error('Erro ao deletar:', err);
+    res.status(500).json({ error: 'Erro ao deletar esquema' });
   }
 });
 
