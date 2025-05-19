@@ -20,7 +20,9 @@ app.use(express.json()); // para receber JSON
 app.use('/uploads', express.static('uploads')); // serve imagens
 app.use('/api/motores', motorRoutes); // rotas de motor
 
-const PORT = 3000;
+// Porta dinâmica para ambientes como Render
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

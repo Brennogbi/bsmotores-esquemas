@@ -15,7 +15,7 @@ formListar.addEventListener('submit', async function (event) {
   });
 
   try {
-    const response = await fetch(`http://localhost:3000/api/motores/buscar?${params.toString()}`);
+    const response = await fetch(`https://cadastro-esquema-bsmotores.onrender.com/api/motores/buscar?${params.toString()}`);
     const data = await response.json();
 
     resultado.innerHTML = '';
@@ -35,7 +35,7 @@ formListar.addEventListener('submit', async function (event) {
         <p>Tensão: ${esquema.tensao}</p>
         <p>Tipo de Ligação: ${esquema.tipoLigacao}</p>
         <p>Observações: ${esquema.observacoes}</p>
-        <img src="http://localhost:3000/uploads/${esquema.imagem}" alt="Imagem do esquema">
+        <img src="https://cadastro-esquema-bsmotores.onrender.com/uploads/${esquema.imagem}" alt="Imagem do esquema">
       `;
       resultado.appendChild(div);
     });
