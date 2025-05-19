@@ -1,5 +1,3 @@
-// js/listar.js
-
 const formListar = document.getElementById('form-listar');
 const resultado = document.getElementById('resultado');
 
@@ -36,8 +34,38 @@ formListar.addEventListener('submit', async function (event) {
         <p>Tipo de Ligação: ${esquema.tipoLigacao}</p>
         <p>Observações: ${esquema.observacoes}</p>
         <img src="http://localhost:3000/uploads/${esquema.imagem}" alt="Imagem do esquema">
+        
+        <!-- ✅ Adicionado: botão para baixar imagem -->
+        <br>
+        <a href="http://localhost:3000/uploads/${esquema.imagem}" download>📥 Baixar imagem</a>
+
+        <!-- ✅ Adicionado: botão para deletar -->
+        <button class="btn-deletar" data-id="${esquema._id}">🗑️ Deletar</button>
       `;
       resultado.appendChild(div);
+    });
+
+    // ✅ Adicionado: evento dos botões de deletar
+    document.querySelectorAll('.btn-deletar').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-id');
+        if (confirm('Tem certeza que deseja deletar este esquema?')) {
+          try {
+            const response = await fetch(`http://localhost:3000/api/motores/${id}`, {
+              method: 'DELETE',
+            });
+            if (response.ok) {
+              alert('Esquema deletado com sucesso!');
+              location.reload(); // recarrega os dados após exclusão
+            } else {
+              alert('Erro ao deletar esquema');
+            }
+          } catch (err) {
+            console.error(err);
+            alert('Erro de conexão com o servidor');
+          }
+        }
+      });
     });
 
   } catch (err) {
