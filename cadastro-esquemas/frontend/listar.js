@@ -1,3 +1,4 @@
+// frontend/listar.js
 const formListar = document.getElementById('form-listar');
 const resultado = document.getElementById('resultado');
 
@@ -16,7 +17,7 @@ formListar.addEventListener('submit', async function (event) {
     const response = await fetch(`https://cadastro-esquema-bsmotores.onrender.com/api/motores/buscar?${params.toString()}`);
     const data = await response.json();
 
-    resultado.innerHTML = '';
+    resultado.innerHTML = ''; // ✅ Limpa os resultados antes de listar (evita duplicação)
 
     if (data.length === 0) {
       resultado.innerHTML = '<p>Nenhum esquema encontrado.</p>';
@@ -26,6 +27,7 @@ formListar.addEventListener('submit', async function (event) {
     data.forEach(esquema => {
       const div = document.createElement('div');
       div.classList.add('esquema-item');
+
       div.innerHTML = `
         <h3>Marca: ${esquema.marca}</h3>
         <p>CV: ${esquema.cv}</p>
@@ -33,34 +35,36 @@ formListar.addEventListener('submit', async function (event) {
         <p>Tensão: ${esquema.tensao}</p>
         <p>Tipo de Ligação: ${esquema.tipoLigacao}</p>
         <p>Observações: ${esquema.observacoes}</p>
-<<<<<<< HEAD
-        <img src="https://cadastro-esquema-bsmotores.onrender.com/uploads/${esquema.imagem}" alt="Imagem do esquema">
-=======
-        <img src="http://localhost:3000/uploads/${esquema.imagem}" alt="Imagem do esquema">
-        
-        <!-- ✅ Adicionado: botão para baixar imagem -->
-        <br>
-        <a href="http://localhost:3000/uploads/${esquema.imagem}" download>📥 Baixar imagem</a>
 
-        <!-- ✅ Adicionado: botão para deletar -->
+        <!-- ✅ URL corrigida para produção -->
+        <img src="https://cadastro-esquema-bsmotores.onrender.com/uploads/${esquema.imagem}" alt="Imagem do esquema">
+
+        <!-- ✅ Botão de download funcional -->
+        <br>
+        <a href="https://cadastro-esquema-bsmotores.onrender.com/uploads/${esquema.imagem}" download>📥 Baixar imagem</a>
+
+        <!-- ✅ Botão deletar com ID correto -->
         <button class="btn-deletar" data-id="${esquema._id}">🗑️ Deletar</button>
->>>>>>> bf8c1277f3e3521db54204adb9843265e730c8cc
       `;
       resultado.appendChild(div);
     });
 
-    // ✅ Adicionado: evento dos botões de deletar
+    // ✅ Evento de deletar esquema
     document.querySelectorAll('.btn-deletar').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-id');
         if (confirm('Tem certeza que deseja deletar este esquema?')) {
           try {
-            const response = await fetch(`http://localhost:3000/api/motores/${id}`, {
+            const deleteResponse = await fetch(`https://cadastro-esquema-bsmotores.onrender.com/api/motores/${id}`, {
               method: 'DELETE',
             });
-            if (response.ok) {
+
+            if (deleteResponse.ok) {
               alert('Esquema deletado com sucesso!');
-              location.reload(); // recarrega os dados após exclusão
+              
+              // ✅ Atualiza listagem sem reload (evita duplicações)
+              formListar.dispatchEvent(new Event('submit'));
+
             } else {
               alert('Erro ao deletar esquema');
             }

@@ -13,11 +13,10 @@
 
   <form id="form-listar">
     <input type="text" id="marcaBusca" placeholder="Marca" name="marca">
-    <input type="text" id="cvBusca"  placeholder="CV (ex: 1, 1/2, 3)"name="cv"> <!-- ✅ type="number" -->
+    <input type="text" id="cvBusca" placeholder="CV (ex: 1, 1/2, 3)" name="cv">
     <input type="text" id="voltagemBusca" placeholder="Voltagem" name="voltagem">
     <input type="text" id="tensaoBusca" placeholder="Tensão" name="tensao">
 
-    <!-- ✅ Sugestão: dropdown em vez de texto livre para evitar erro de digitação -->
     <select id="tipoLigacaoBusca" name="tipoLigacao">
       <option value="">Tipo de Ligação</option>
       <option value="monofasico">Monofásico</option>
@@ -30,6 +29,7 @@
 
   <div id="resultado"></div>
 
+  <!-- ✅ Script atualizado -->
   <script src="listar.js"></script>
 </body>
 </html>
