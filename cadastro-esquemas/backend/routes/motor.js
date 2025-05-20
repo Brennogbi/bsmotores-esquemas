@@ -1,39 +1,36 @@
+// routes/motor.js
 const express = require('express');
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary'); // ✅ IMPORTAÇÃO ADICIONADA
-const cloudinary = require('cloudinary').v2; // ✅ IMPORTAÇÃO ADICIONADA
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 const Motor = require('../models/Motor');
 const router = express.Router();
 
-// ✅ CONFIGURAÇÃO DO CLOUDINARY (usa variáveis .env)
+// Configuração Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// ✅ ARMAZENAMENTO NO CLOUDINARY EM VEZ DE LOCAL
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'motores', // Pasta no Cloudinary onde as imagens ficarão
+    folder: 'motores',
     allowed_formats: ['jpg', 'jpeg', 'png']
   }
 });
 
-const upload = multer({ storage }); // substitui multer.diskStorage
+const upload = multer({ storage });
 
-// ✅ ROTA: CADASTRAR MOTOR COM IMAGEM NO CLOUDINARY
+// Rota: Cadastrar motor
 router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
   try {
-    const {
-      marca,
-      cv,
-      voltagem,
-      tensao,
-      tipoLigacao,
-      observacoes
-    } = req.body;
+    const { marca, cv, voltagem, tensao, tipoLigacao, observacoes } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ erro: 'Imagem é obrigatória.' });
+    }
 
     const novoMotor = new Motor({
       marca,
@@ -42,7 +39,7 @@ router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
       tensao,
       tipoLigacao,
       observacoes,
-      imagem: req.file ? req.file.path : null // ✅ SALVA A URL DA IMAGEM NO CLOUDINARY
+      imagem: req.file.path
     });
 
     await novoMotor.save();
@@ -52,13 +49,13 @@ router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
   }
 });
 
-// ✅ ROTA: BUSCAR MOTORES COM FILTROS OPCIONAIS
+// Rota: Buscar motores com filtros opcionais
 router.get('/buscar', async (req, res) => {
   try {
     const { marca, cv, voltagem, tensao, tipoLigacao } = req.query;
 
     const filtro = {};
-    if (marca) filtro.marca = marca;
+    if (marca) filtro.marca = new RegExp(marca, 'i'); // busca parcial
     if (cv) filtro.cv = cv;
     if (voltagem) filtro.voltagem = voltagem;
     if (tensao) filtro.tensao = tensao;

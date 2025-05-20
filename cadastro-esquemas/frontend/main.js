@@ -8,7 +8,7 @@ formCadastro.addEventListener('submit', async function (event) {
   const formData = new FormData(formCadastro);
 
   try {
-    const response = await fetch('https://https://bsmotores-esquemas.onrender.com/api/motores/cadastrar', {
+    const response = await fetch('https://bsmotores-esquemas.onrender.com/api/motores/cadastrar', {
       method: 'POST',
       body: formData
     });

@@ -13,7 +13,7 @@ formListar.addEventListener('submit', async function (event) {
   });
 
   try {
-    const response = await fetch(`https://cadastro-esquema-bsmotores.onrender.com/api/motores/buscar?${params.toString()}`);
+    const response = await fetch(`https://bsmotores-esquemas.onrender.com/api/motores/buscar?${params.toString()}`);
     const data = await response.json();
 
     resultado.innerHTML = ''; // ✅ Limpa os resultados antes de listar
@@ -53,7 +53,7 @@ formListar.addEventListener('submit', async function (event) {
         const id = btn.getAttribute('data-id');
         if (confirm('Tem certeza que deseja deletar este esquema?')) {
           try {
-            const deleteResponse = await fetch(`https://cadastro-esquema-bsmotores.onrender.com/api/motores/${id}`, {
+            const deleteResponse = await fetch(`https://bsmotores-esquemas.onrender.com/api/motores/${id}`, {
               method: 'DELETE',
             });
 

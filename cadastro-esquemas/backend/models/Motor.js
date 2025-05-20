@@ -1,3 +1,4 @@
+// models/Motor.js
 const mongoose = require('mongoose');
 
 const MotorSchema = new mongoose.Schema({
@@ -6,8 +7,8 @@ const MotorSchema = new mongoose.Schema({
   voltagem: { type: String, required: true },
   tensao: { type: String, required: true },
   tipoLigacao: { type: String, enum: ['monofasico', 'trifasico'], required: true },
-  observacoes: { type: String }, // ✅ Corrigido: era "observacao"
-  imagem: { type: String }       // ✅ Corrigido: era "imagemEsquema"
+  observacoes: { type: String },
+  imagem: { type: String }
 });
 
 module.exports = mongoose.model('Motor', MotorSchema);

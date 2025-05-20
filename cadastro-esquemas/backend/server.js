@@ -2,25 +2,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const dotenv = require('dotenv');
 const motorRoutes = require('./routes/motor');
+
+dotenv.config(); // ✅ carregando variáveis do .env
 
 const app = express();
 
-// Conexão com MongoDB (ajuste sua string se for diferente)
-mongoose.connect('mongodb+srv://breno:zoraboqueteira@users.pwjdncf.mongodb.net/cadastro-motores?retryWrites=true&w=majority&appName=users', {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 .then(() => console.log('🟢 Conectado ao MongoDB'))
 .catch(err => console.error('🔴 Erro ao conectar:', err));
 
-// Middlewares
 app.use(cors());
-app.use(express.json()); // para receber JSON
-app.use('/uploads', express.static('uploads')); // serve imagens
-app.use('/api/motores', motorRoutes); // rotas de motor
+app.use(express.json());
+app.use('/uploads', express.static('uploads'));
+app.use('/api/motores', motorRoutes);
 
-// Porta dinâmica para ambientes como Render
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
