@@ -11,7 +11,7 @@ formCadastro.addEventListener('submit', async function (event) {
 
   try {
     // Envia os dados para a API usando método POST
-    const response = await fetch('https://bsmotores-esquemas.onrender.com/api/motores/cadastrar', {
+    const response = await fetch('https://bsmotores-esquemas.onrender.com.com/api/motores/cadastrar', {
       method: 'POST',
       body: formData
     });
