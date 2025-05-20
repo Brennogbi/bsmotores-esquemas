@@ -1,4 +1,4 @@
-// frontend/main.js
+
 
 // Seleciona o formulário pelo ID
 const formCadastro = document.getElementById('form-cadastro');
