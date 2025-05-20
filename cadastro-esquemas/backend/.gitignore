@@ -1,0 +1,2 @@
+# Ignorar variáveis de ambiente (segurança)
+.env

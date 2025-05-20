@@ -1,22 +1,29 @@
 const express = require('express');
 const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary'); // ✅ IMPORTAÇÃO ADICIONADA
+const cloudinary = require('cloudinary').v2; // ✅ IMPORTAÇÃO ADICIONADA
 const Motor = require('../models/Motor');
 const router = express.Router();
-const fs = require('fs'); // ✅ Necessário para deletar arquivos
-const path = require('path'); // ✅ Necessário para construir o caminho da imagem
 
-// 📁 Configuração do multer para salvar imagem na pasta /uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+// ✅ CONFIGURAÇÃO DO CLOUDINARY (usa variáveis .env)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// ✅ ARMAZENAMENTO NO CLOUDINARY EM VEZ DE LOCAL
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'motores', // Pasta no Cloudinary onde as imagens ficarão
+    allowed_formats: ['jpg', 'jpeg', 'png']
   }
 });
-const upload = multer({ storage });
 
-// ✅ ROTA: CADASTRAR MOTOR
+const upload = multer({ storage }); // substitui multer.diskStorage
+
+// ✅ ROTA: CADASTRAR MOTOR COM IMAGEM NO CLOUDINARY
 router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
   try {
     const {
@@ -25,7 +32,7 @@ router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
       voltagem,
       tensao,
       tipoLigacao,
-      observacoes // ⚠️ Corrigido de "observacao" para "observacoes" (como no frontend)
+      observacoes
     } = req.body;
 
     const novoMotor = new Motor({
@@ -35,7 +42,7 @@ router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
       tensao,
       tipoLigacao,
       observacoes,
-      imagem: req.file ? req.file.filename : null // ⚠️ Corrigido para bater com o nome usado no listar.js
+      imagem: req.file ? req.file.path : null // ✅ SALVA A URL DA IMAGEM NO CLOUDINARY
     });
 
     await novoMotor.save();
@@ -45,7 +52,7 @@ router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
   }
 });
 
-// ✅ ROTA: BUSCAR MOTORES COM FILTRO
+// ✅ ROTA: BUSCAR MOTORES COM FILTROS OPCIONAIS
 router.get('/buscar', async (req, res) => {
   try {
     const { marca, cv, voltagem, tensao, tipoLigacao } = req.query;
@@ -61,28 +68,6 @@ router.get('/buscar', async (req, res) => {
     res.json(motores);
   } catch (erro) {
     res.status(500).json({ erro: 'Erro ao buscar motores', detalhe: erro.message });
-  }
-});
-
-// ✅ ROTA: DELETAR ESQUEMA POR ID
-router.delete('/:id', async (req, res) => {
-  try {
-    const esquema = await Motor.findById(req.params.id);
-    if (!esquema) {
-      return res.status(404).json({ message: 'Esquema não encontrado' });
-    }
-
-    // ✅ Apaga imagem do disco se existir
-    const imagemPath = path.join(__dirname, '..', 'uploads', esquema.imagem);
-    if (fs.existsSync(imagemPath)) {
-      fs.unlinkSync(imagemPath);
-    }
-
-    await Motor.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'Esquema deletado com sucesso' });
-  } catch (err) {
-    console.error('Erro ao deletar:', err);
-    res.status(500).json({ error: 'Erro ao deletar esquema' });
   }
 });
 
