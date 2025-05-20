@@ -1,4 +1,3 @@
-// frontend/listar.js
 const formListar = document.getElementById('form-listar');
 const resultado = document.getElementById('resultado');
 
@@ -17,7 +16,7 @@ formListar.addEventListener('submit', async function (event) {
     const response = await fetch(`https://cadastro-esquema-bsmotores.onrender.com/api/motores/buscar?${params.toString()}`);
     const data = await response.json();
 
-    resultado.innerHTML = ''; // ✅ Limpa os resultados antes de listar (evita duplicação)
+    resultado.innerHTML = ''; // ✅ Limpa os resultados antes de listar
 
     if (data.length === 0) {
       resultado.innerHTML = '<p>Nenhum esquema encontrado.</p>';
@@ -34,16 +33,15 @@ formListar.addEventListener('submit', async function (event) {
         <p>Voltagem: ${esquema.voltagem}</p>
         <p>Tensão: ${esquema.tensao}</p>
         <p>Tipo de Ligação: ${esquema.tipoLigacao}</p>
-        <p>Observações: ${esquema.observacoes}</p>
+        <p>Observações: ${esquema.observacoes || '---'}</p>
 
-        <!-- ✅ URL corrigida para produção -->
-        <img src="https://cadastro-esquema-bsmotores.onrender.com/uploads/${esquema.imagem}" alt="Imagem do esquema">
+        <!-- ✅ IMAGEM USANDO URL DIRETA DO CLOUDINARY -->
+        ${esquema.imagem ? `<img src="${esquema.imagem}" alt="Imagem do esquema" style="max-width: 300px;">` : '<p>Sem imagem</p>'}
 
-        <!-- ✅ Botão de download funcional -->
-        <br>
-        <a href="https://cadastro-esquema-bsmotores.onrender.com/uploads/${esquema.imagem}" download>📥 Baixar imagem</a>
+        <!-- ✅ DOWNLOAD DA IMAGEM DIRETO DO CLOUDINARY -->
+        ${esquema.imagem ? `<br><a href="${esquema.imagem}" download target="_blank">📥 Baixar imagem</a>` : ''}
 
-        <!-- ✅ Botão deletar com ID correto -->
+        <!-- ✅ BOTÃO DELETAR COM ID -->
         <button class="btn-deletar" data-id="${esquema._id}">🗑️ Deletar</button>
       `;
       resultado.appendChild(div);
@@ -61,10 +59,7 @@ formListar.addEventListener('submit', async function (event) {
 
             if (deleteResponse.ok) {
               alert('Esquema deletado com sucesso!');
-              
-              // ✅ Atualiza listagem sem reload (evita duplicações)
-              formListar.dispatchEvent(new Event('submit'));
-
+              formListar.dispatchEvent(new Event('submit')); // ✅ Atualiza listagem
             } else {
               alert('Erro ao deletar esquema');
             }
