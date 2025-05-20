@@ -72,4 +72,22 @@ router.get('/buscar', async (req, res) => {
   }
 });
 
+
+// Rota: Deletar motor por ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const motor = await Motor.findByIdAndDelete(id);
+
+    if (!motor) {
+      return res.status(404).json({ erro: 'Motor não encontrado.' });
+    }
+
+    res.json({ mensagem: 'Motor deletado com sucesso.' });
+  } catch (erro) {
+    res.status(500).json({ erro: 'Erro ao deletar motor.', detalhe: erro.message });
+  }
+});
+
+
 module.exports = router;
