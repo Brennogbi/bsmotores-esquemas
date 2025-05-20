@@ -1,3 +1,4 @@
+// routes/motor.js
 const express = require('express');
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -64,23 +65,6 @@ router.get('/buscar', async (req, res) => {
     res.json(motores);
   } catch (erro) {
     res.status(500).json({ erro: 'Erro ao buscar motores', detalhe: erro.message });
-  }
-});
-
-// Rota: Deletar motor pelo ID
-router.delete('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const motor = await Motor.findByIdAndDelete(id);
-
-    if (!motor) {
-      return res.status(404).json({ erro: 'Motor não encontrado.' });
-    }
-
-    res.json({ mensagem: 'Motor deletado com sucesso.' });
-  } catch (erro) {
-    res.status(500).json({ erro: 'Erro ao deletar motor.', detalhe: erro.message });
   }
 });
 
