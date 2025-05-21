@@ -101,3 +101,25 @@ h1 {
     margin-bottom: 20px;
   }
   
+
+  /* Botões padrão (Procurar, etc) */
+button,
+a.button {
+  background: linear-gradient(90deg, #0066ff, #00ccff);
+  color: #fff;
+  border: none;
+  margin-top: 15px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: transform 0.3s, background 0.3s;
+}
+
+button:hover,
+a.button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(90deg, #00ccff, #0066ff);
+}
