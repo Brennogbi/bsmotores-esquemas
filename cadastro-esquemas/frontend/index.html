@@ -15,13 +15,13 @@
     <input type="text" id="marca" name="marca" placeholder="Marca" required><br>
 
     <label for="cv">CV:</label><br>
-    <input type="text" id="cv" name="cv" placeholder="CV (ex: 1, 1/2, 3)" pattern="^[0-9/ ]+$" required><br>
+    <input type="text" id="cv" name="cv" placeholder="CV (ex: 1 1.2, 2 ,3 7.5 10)" pattern="^[0-9/ ]+$" required><br>
 
     <label for="voltagem">Voltagem:</label><br>
-    <input type="text" id="voltagem" name="voltagem" placeholder="Voltagem" required><br>
+    <input type="text" id="voltagem" name="voltagem" placeholder="110/220/380/440/660" required><br>
 
     <label for="tensao">Tensão:</label><br>
-    <input type="text" id="tensao" name="tensao" placeholder="Tensão" required><br>
+    <input type="text" id="tensao" name="tensao" placeholder="alta  /baixa" required><br>
 
     <label for="tipoLigacao">Tipo de Ligação:</label><br>
     <select id="tipoLigacao" name="tipoLigacao" required>
@@ -38,7 +38,7 @@
 
     <button type="submit">Cadastrar</button>
     <!-- ✅ Melhor usar <a> sozinho com class ou estilização -->
-    <a href="listar.html">Ir para Listar</a>
+    <a href="listar.html">Esquemas</a>
   </form>
 
   <script src="main.js"></script>
