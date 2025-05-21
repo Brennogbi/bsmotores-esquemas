@@ -66,7 +66,11 @@ function adicionarEventosDeletar() {
         try {
           const deleteResponse = await fetch(`https://bsmotores-esquemas.onrender.com/api/motores/${id}`, {
             method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
           });
+
 
           if (deleteResponse.ok) {
             alert('✅ Esquema deletado com sucesso!');
