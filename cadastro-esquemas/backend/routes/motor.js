@@ -1,6 +1,6 @@
 
 
-motor.js
+
 
 // routes/motor.js
 const express = require('express');
