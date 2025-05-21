@@ -1,5 +1,3 @@
-
-
 // server.js
 const express = require('express');
 const mongoose = require('mongoose');
@@ -7,11 +5,11 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const motorRoutes = require('./routes/motor');
 
-
-dotenv.config(); // ✅ carregando variáveis do .env
+dotenv.config();
 
 const app = express();
 
+// Conexão MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -25,7 +23,6 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/motores', motorRoutes);
 
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

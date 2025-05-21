@@ -1,7 +1,3 @@
-
-
-
-
 // routes/motor.js
 const express = require('express');
 const multer = require('multer');
@@ -10,7 +6,7 @@ const cloudinary = require('cloudinary').v2;
 const Motor = require('../models/Motor');
 const router = express.Router();
 
-// Configuração Cloudinary
+// 🔧 Configuração do Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -18,7 +14,7 @@ cloudinary.config({
 });
 
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary,
   params: {
     folder: 'motores',
     allowed_formats: ['jpg', 'jpeg', 'png']
@@ -27,7 +23,7 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-// Rota: Cadastrar motor
+// 📤 POST - Cadastrar motor
 router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
   try {
     const { marca, cv, voltagem, tensao, tipoLigacao, observacoes } = req.body;
@@ -53,13 +49,13 @@ router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
   }
 });
 
-// Rota: Buscar motores com filtros opcionais
+// 🔍 GET - Buscar motores com filtros
 router.get('/buscar', async (req, res) => {
   try {
     const { marca, cv, voltagem, tensao, tipoLigacao } = req.query;
 
     const filtro = {};
-    if (marca) filtro.marca = new RegExp(marca, 'i'); // busca parcial
+    if (marca) filtro.marca = new RegExp(marca, 'i');
     if (cv) filtro.cv = cv;
     if (voltagem) filtro.voltagem = voltagem;
     if (tensao) filtro.tensao = tensao;
@@ -72,8 +68,7 @@ router.get('/buscar', async (req, res) => {
   }
 });
 
-
-// Rota: Deletar motor por ID
+// ❌ DELETE - Remover motor por ID
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -88,6 +83,5 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ erro: 'Erro ao deletar motor.', detalhe: erro.message });
   }
 });
-
 
 module.exports = router;

@@ -1,4 +1,4 @@
-<!-- frontend/listar.html -->
+<!-- listar.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,19 +11,18 @@
 
   <h1>Listar Esquemas</h1>
 
-  <!-- ✅ Formulário para buscar esquemas com filtros -->
   <form id="form-listar">
     <label for="marcaBusca">Marca:</label>
-    <input type="text" id="marcaBusca" placeholder="Marca" name="marca" />
+    <input type="text" id="marcaBusca" name="marca" placeholder="Marca" />
 
     <label for="cvBusca">CV:</label>
-    <input type="text" id="cvBusca" placeholder="CV (ex: 1, 1/2, 3)" name="cv" />
+    <input type="text" id="cvBusca" name="cv" placeholder="CV (ex: 1, 1/2, 3)" />
 
     <label for="voltagemBusca">Voltagem:</label>
-    <input type="text" id="voltagemBusca" placeholder="Voltagem" name="voltagem" />
+    <input type="text" id="voltagemBusca" name="voltagem" placeholder="Voltagem" />
 
     <label for="tensaoBusca">Tensão:</label>
-    <input type="text" id="tensaoBusca" placeholder="Tensão" name="tensao" />
+    <input type="text" id="tensaoBusca" name="tensao" placeholder="Tensão" />
 
     <label for="tipoLigacaoBusca">Tipo de Ligação:</label>
     <select id="tipoLigacaoBusca" name="tipoLigacao">
@@ -33,13 +32,11 @@
     </select>
 
     <button type="submit">Procurar</button>
-    <a href="./index.html"><button type="button">Voltar para Cadastro</button></a>
+    <a href="index.html">Voltar para Cadastro</a>
   </form>
 
-  <!-- ✅ Área onde serão exibidos os resultados -->
   <div id="resultado"></div>
 
-  <!-- ✅ Script para buscar e exibir os esquemas -->
   <script src="listar.js"></script>
 </body>
 </html>
