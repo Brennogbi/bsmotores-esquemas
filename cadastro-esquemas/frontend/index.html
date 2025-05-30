@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -14,13 +14,13 @@
     <input type="text" id="marca" name="marca" required><br>
 
     <label for="cv">CV:</label><br>
-    <input type="text" id="cv" name="cv" pattern="^[0-9/ .]+$" required><br>
+    <input type="number" id="cv" name="cv" step="any" required><br>
 
     <label for="voltagem">Voltagem:</label><br>
-    <input type="text" id="voltagem" name="voltagem" required><br>
+    <input type="number" id="voltagem" name="voltagem" step="any" required><br>
 
     <label for="tensao">Tensão:</label><br>
-    <input type="text" id="tensao" name="tensao" required><br>
+    <input type="number" id="tensao" name="tensao" step="any" required><br>
 
     <label for="tipoLigacao">Tipo de Ligação:</label><br>
     <select id="tipoLigacao" name="tipoLigacao" required>
@@ -33,7 +33,10 @@
     <textarea id="observacoes" name="observacoes" rows="4"></textarea><br>
 
     <label for="imagem">Imagem do Esquema:</label><br>
-    <input type="file" id="imagem" name="imagem" accept="image/*" required><br><br>
+    <input type="file" id="imagem" name="imagem" accept="image/jpeg,image/png" required><br>
+
+    <label for="arquivos">Arquivos Adicionais (PDF, JPG, PNG):</label><br>
+    <input type="file" id="arquivos" name="arquivos" accept=".pdf,image/jpeg,image/png" multiple><br><br>
 
     <button type="submit">Cadastrar</button>
     <a href="listar.html">Ver Esquemas</a>

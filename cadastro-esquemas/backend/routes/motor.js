@@ -12,6 +12,7 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
+console.log('🟢 Cloudinary configurado com sucesso');
 
 // 📦 Storage para imagens
 const imageStorage = new CloudinaryStorage({
@@ -34,12 +35,15 @@ const fileStorage = new CloudinaryStorage({
 const uploadImage = multer({ storage: imageStorage });
 const uploadFiles = multer({ storage: fileStorage });
 
-
 // 🔥 POST - Cadastrar motor
 router.post('/cadastrar', uploadImage.single('imagem'), uploadFiles.array('arquivos', 5), async (req, res) => {
   try {
     const { marca, cv, voltagem, tensao, tipoLigacao, observacoes } = req.body;
 
+    // Validação explícita dos campos obrigatórios
+    if (!marca || !cv || !voltagem || !tensao || !tipoLigacao) {
+      return res.status(400).json({ erro: 'Todos os campos obrigatórios (marca, cv, voltagem, tensao, tipoLigacao) devem ser preenchidos.' });
+    }
     if (!req.file) {
       return res.status(400).json({ erro: 'Imagem é obrigatória.' });
     }
@@ -48,9 +52,9 @@ router.post('/cadastrar', uploadImage.single('imagem'), uploadFiles.array('arqui
 
     const novoMotor = new Motor({
       marca,
-      cv,
-      voltagem,
-      tensao,
+      cv: Number(cv),
+      voltagem: Number(voltagem),
+      tensao: Number(tensao),
       tipoLigacao,
       observacoes,
       imagem: req.file.path,
@@ -71,9 +75,9 @@ router.get('/buscar', async (req, res) => {
 
     const filtro = {};
     if (marca) filtro.marca = new RegExp(marca, 'i');
-    if (cv) filtro.cv = cv;
-    if (voltagem) filtro.voltagem = voltagem;
-    if (tensao) filtro.tensao = tensao;
+    if (cv) filtro.cv = Number(cv);
+    if (voltagem) filtro.voltagem = Number(voltagem);
+    if (tensao) filtro.tensao = Number(tensao);
     if (tipoLigacao) filtro.tipoLigacao = tipoLigacao;
 
     const motores = await Motor.find(filtro).sort({ createdAt: -1 });
@@ -89,7 +93,7 @@ router.get('/quantidade', async (req, res) => {
     const total = await Motor.countDocuments();
     res.json({ total });
   } catch (erro) {
-    res.status(500).json({ erro: 'Erro ao contar motores.', detalhe: erro.message });
+    res.status(500).json({ erro: 'Erro ao contar motores', detalhe: erro.message });
   }
 });
 
@@ -99,7 +103,7 @@ router.get('/ultimos', async (req, res) => {
     const motores = await Motor.find().sort({ createdAt: -1 }).limit(5);
     res.json(motores);
   } catch (erro) {
-    res.status(500).json({ erro: 'Erro ao buscar últimos motores.', detalhe: erro.message });
+    res.status(500).json({ erro: 'Erro ao buscar últimos motores', detalhe: erro.message });
   }
 });
 
@@ -109,11 +113,16 @@ router.put('/editar/:id', uploadImage.single('imagem'), uploadFiles.array('arqui
     const { id } = req.params;
     const { marca, cv, voltagem, tensao, tipoLigacao, observacoes } = req.body;
 
+    // Validação explícita dos campos obrigatórios
+    if (!marca || !cv || !voltagem || !tensao || !tipoLigacao) {
+      return res.status(400).json({ erro: 'Todos os campos obrigatórios (marca, cv, voltagem, tensao, tipoLigacao) devem ser preenchidos.' });
+    }
+
     const dadosAtualizados = {
       marca,
-      cv,
-      voltagem,
-      tensao,
+      cv: Number(cv),
+      voltagem: Number(voltagem),
+      tensao: Number(tensao),
       tipoLigacao,
       observacoes,
     };
@@ -134,12 +143,13 @@ router.put('/editar/:id', uploadImage.single('imagem'), uploadFiles.array('arqui
 
     res.json({ mensagem: 'Motor atualizado com sucesso', motor });
   } catch (erro) {
-    res.status(500).json({ erro: 'Erro ao atualizar motor.', detalhe: erro.message });
+    res.status(500).json({ erro: 'Erro ao atualizar motor', detalhe: erro.message });
   }
 });
 
 // ❌ DELETE - Remover motor por ID (incluindo Cloudinary)
 router.delete('/:id', async (req, res) => {
+  // NOTA: Considere adicionar autenticação (ex.: JWT) aqui para maior segurança
   try {
     const { id } = req.params;
     const motor = await Motor.findById(id);
@@ -160,14 +170,15 @@ router.delete('/:id', async (req, res) => {
     // 🗑️ Deletar imagem principal
     if (motor.imagem) {
       const publicIdImagem = getPublicId(motor.imagem);
-      await cloudinary.uploader.destroy(publicIdImagem);
+      await cloudinary.uploader.destroy(publicIdImagem, { resource_type: 'image' });
     }
 
     // 🗑️ Deletar arquivos extras
     if (motor.arquivos && motor.arquivos.length > 0) {
       for (const arquivoUrl of motor.arquivos) {
         const publicIdArquivo = getPublicId(arquivoUrl);
-        await cloudinary.uploader.destroy(publicIdArquivo, { resource_type: "raw" });
+        const resourceType = arquivoUrl.endsWith('.pdf') ? 'raw' : 'image';
+        await cloudinary.uploader.destroy(publicIdArquivo, { resource_type: resourceType });
       }
     }
 
@@ -177,7 +188,7 @@ router.delete('/:id', async (req, res) => {
     res.json({ mensagem: 'Motor deletado com sucesso, incluindo arquivos do Cloudinary.' });
 
   } catch (erro) {
-    res.status(500).json({ erro: 'Erro ao deletar motor.', detalhe: erro.message });
+    res.status(500).json({ erro: 'Erro ao deletar motor', detalhe: erro.message });
   }
 });
 

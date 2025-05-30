@@ -1,4 +1,4 @@
-const express = require('mongoose');
+const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const motorRoutes = require('./routes/motor');
@@ -8,15 +8,16 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // 🧠 Conexão com MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('🟢 Conectado ao MongoDB'))
-.catch((err) => console.error('🔴 Erro na conexão com MongoDB:', err));
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('🟢 Conectado ao MongoDB'))
+  .catch((err) => console.error('🔴 Erro na conexão com MongoDB:', err));
 
 // 🚀 Middlewares
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://bsmotores-esquemas.onrender.com'], // Permitir frontend local e hospedado
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // 🔗 Rotas
