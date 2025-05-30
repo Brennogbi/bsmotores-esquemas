@@ -1,51 +1,75 @@
-async function buscarMotores() {
-    const marca = document.getElementById('filtroMarca').value;
-    const url = `https://bsmotores-esquemas.onrender.com/api/motores/buscar?marca=${marca}`;
-    try {
-        const response = await fetch(url);
-        const motores = await response.json();
-        exibirMotores(motores);
-    } catch (error) {
-        console.error('Erro ao buscar motores:', error);
+// listar.js
+
+const formListar = document.getElementById('form-listar');
+const resultado = document.getElementById('resultado');
+
+formListar.addEventListener('submit', async function (event) {
+  event.preventDefault();
+
+  const params = new URLSearchParams({
+    marca: document.getElementById('marcaBusca').value,
+    cv: document.getElementById('cvBusca').value,
+    voltagem: document.getElementById('voltagemBusca').value,
+    tensao: document.getElementById('tensaoBusca').value,
+    tipoLigacao: document.getElementById('tipoLigacaoBusca').value
+  });
+
+  try {
+    const response = await fetch(`https://bsmotores-esquemas.onrender.com/api/motores/buscar?${params.toString()}`);
+    const data = await response.json();
+
+    resultado.innerHTML = '';
+
+    if (data.length === 0) {
+      resultado.innerHTML = '<p>Nenhum esquema encontrado.</p>';
+      return;
     }
-}
 
-function exibirMotores(motores) {
-    const lista = document.getElementById('listaMotores');
-    lista.innerHTML = '';
+    data.forEach(esquema => {
+      const div = document.createElement('div');
+      div.classList.add('esquema-item');
 
-    motores.forEach(motor => {
-        const div = document.createElement('div');
-        div.innerHTML = `
-            <h3>${motor.marca} - CV: ${motor.cv}</h3>
-            <p>Voltagem: ${motor.voltagem}V, Tensão: ${motor.tensao}V, Tipo: ${motor.tipoLigacao}</p>
-            <p>Observações: ${motor.observacoes || 'Nenhuma'}</p>
-            <img src="${motor.imagem}" alt="Imagem do motor" style="max-width: 200px;"><br><br>
-            <button onclick="deletarMotor('${motor._id}')">Deletar</button>
-            <h4>Arquivos Adicionais:</h4>
-            ${motor.arquivos && motor.arquivos.length > 0 ? motor.arquivos.map(arquivo => `
-                <a href="${arquivo}" download>Baixar ${arquivo.split('/').pop()}</a><br>
-            `).join('') : 'Nenhum arquivo adicional'}
-            <hr>
-        `;
-        lista.appendChild(div);
+      div.innerHTML = `
+        <h3>Marca: ${esquema.marca}</h3>
+        <p>CV: ${esquema.cv}</p>
+        <p>Voltagem: ${esquema.voltagem}</p>
+        <p>Tensão: ${esquema.tensao}</p>
+        <p>Tipo de Ligação: ${esquema.tipoLigacao}</p>
+        <p>Observações: ${esquema.observacoes || '---'}</p>
+        ${esquema.imagem ? `<img src="${esquema.imagem}" alt="Imagem do esquema" style="max-width: 300px;">` : '<p>Sem imagem</p>'}
+        ${esquema.imagem ? `<br><a href="${esquema.imagem}" download target="_blank">📥 Baixar imagem</a>` : ''}
+        <button class="btn-deletar" data-id="${esquema._id}">🗑️ Deletar</button>
+      `;
+
+      resultado.appendChild(div);
     });
-}
 
-async function deletarMotor(id) {
-    if (confirm('Tem certeza que deseja deletar este motor?')) {
-        try {
-            const response = await fetch(`https://bsmotores-esquemas.onrender.com/api/motores/${id}`, {
-                method: 'DELETE'
+    // Deleção de esquemas
+    document.querySelectorAll('.btn-deletar').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-id');
+        if (confirm('Tem certeza que deseja deletar este esquema?')) {
+          try {
+            const deleteResponse = await fetch(`https://bsmotores-esquemas.onrender.com/api/motores/${id}`, {
+              method: 'DELETE',
             });
-            const result = await response.json();
-            alert(result.mensagem);
-            buscarMotores(); // Atualiza a lista após deletar
-        } catch (error) {
-            console.error('Erro ao deletar motor:', error);
-        }
-    }
-}
 
-// Busca inicial ao carregar a página
-buscarMotores();
+            if (deleteResponse.ok) {
+              alert('✅ Esquema deletado com sucesso!');
+              formListar.dispatchEvent(new Event('submit'));
+            } else {
+              alert('❌ Erro ao deletar esquema.');
+            }
+          } catch (err) {
+            console.error('Erro ao deletar:', err);
+            alert('❌ Erro de conexão com o servidor.');
+          }
+        }
+      });
+    });
+
+  } catch (err) {
+    console.error('Erro ao buscar:', err);
+    alert('❌ Erro ao buscar dados.');
+  }
+});
