@@ -6,7 +6,7 @@ const Motor = require('../models/Motor');
 const router = express.Router();
 require('dotenv').config();
 
-// 🔧 Cloudinary Config
+// 🔧 Configuração do Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -22,7 +22,7 @@ const imageStorage = new CloudinaryStorage({
   }
 });
 
-// 📑 Storage para outros arquivos (PDFs, etc.)
+// 📑 Storage para outros arquivos (PDFs, esquemas, etc.)
 const fileStorage = new CloudinaryStorage({
   cloudinary,
   params: {
@@ -33,6 +33,7 @@ const fileStorage = new CloudinaryStorage({
 
 const uploadImage = multer({ storage: imageStorage });
 const uploadFiles = multer({ storage: fileStorage });
+
 
 // 🔥 POST - Cadastrar motor
 router.post('/cadastrar', uploadImage.single('imagem'), uploadFiles.array('arquivos', 5), async (req, res) => {
@@ -137,17 +138,44 @@ router.put('/editar/:id', uploadImage.single('imagem'), uploadFiles.array('arqui
   }
 });
 
-// ❌ DELETE - Remover motor por ID
+// ❌ DELETE - Remover motor por ID (incluindo Cloudinary)
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const motor = await Motor.findByIdAndDelete(id);
+    const motor = await Motor.findById(id);
 
     if (!motor) {
       return res.status(404).json({ erro: 'Motor não encontrado.' });
     }
 
-    res.json({ mensagem: 'Motor deletado com sucesso.' });
+    // 🔥 Função auxiliar para extrair o public_id
+    const getPublicId = (url) => {
+      const parts = url.split('/');
+      const fileName = parts[parts.length - 1];
+      const publicId = fileName.substring(0, fileName.lastIndexOf('.'));
+      const folder = parts.slice(parts.indexOf('motores')).join('/').replace(`/${fileName}`, '');
+      return `${folder}/${publicId}`;
+    };
+
+    // 🗑️ Deletar imagem principal
+    if (motor.imagem) {
+      const publicIdImagem = getPublicId(motor.imagem);
+      await cloudinary.uploader.destroy(publicIdImagem);
+    }
+
+    // 🗑️ Deletar arquivos extras
+    if (motor.arquivos && motor.arquivos.length > 0) {
+      for (const arquivoUrl of motor.arquivos) {
+        const publicIdArquivo = getPublicId(arquivoUrl);
+        await cloudinary.uploader.destroy(publicIdArquivo, { resource_type: "raw" });
+      }
+    }
+
+    // 🔥 Deletar do MongoDB
+    await Motor.findByIdAndDelete(id);
+
+    res.json({ mensagem: 'Motor deletado com sucesso, incluindo arquivos do Cloudinary.' });
+
   } catch (erro) {
     res.status(500).json({ erro: 'Erro ao deletar motor.', detalhe: erro.message });
   }

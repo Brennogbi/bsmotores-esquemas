@@ -42,7 +42,7 @@ formListar.addEventListener('submit', async function (event) {
       resultado.appendChild(div);
     });
 
-    // Deletar esquema
+    // Botões de deletar
     document.querySelectorAll('.btn-deletar').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-id');
@@ -54,9 +54,10 @@ formListar.addEventListener('submit', async function (event) {
 
             if (deleteResponse.ok) {
               alert('✅ Esquema deletado com sucesso!');
-              formListar.dispatchEvent(new Event('submit'));
+              formListar.dispatchEvent(new Event('submit')); // Atualiza a listagem
             } else {
-              alert('❌ Erro ao deletar esquema.');
+              const erro = await deleteResponse.json();
+              alert('❌ Erro ao deletar: ' + (erro.message || 'Tente novamente.'));
             }
           } catch (err) {
             console.error('Erro:', err);
