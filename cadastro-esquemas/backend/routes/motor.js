@@ -6,6 +6,12 @@ const Motor = require('../models/Motor');
 const router = express.Router();
 require('dotenv').config();
 
+// Verificação das credenciais do Cloudinary
+if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+  console.error('🔴 Erro: Credenciais do Cloudinary não estão definidas nas variáveis de ambiente.');
+  process.exit(1);
+}
+
 // 🔧 Configuração do Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
