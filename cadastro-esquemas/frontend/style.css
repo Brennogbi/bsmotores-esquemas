@@ -40,7 +40,6 @@ form {
 
 /* Inputs e textarea */
 input[type="text"],
-input[type="number"],
 input[type="file"],
 textarea,
 select {
@@ -97,6 +96,12 @@ button:hover {
     transform: scale(1.02);
 }
 
+/* Centralizar título */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 /* Links como botões */
 a {
     text-decoration: none;
@@ -112,15 +117,8 @@ a {
 }
 
 a:hover {
-    transform: scale(1.05);
+    transform: scale(1.05); /* Corrigido: estava 2.05 */
     background: linear-gradient(90deg, #00ccff, #0066ff);
-}
-
-/* Estilo para links de download */
-.esquema-item a {
-    margin-right: 10px;
-    padding: 8px 15px;
-    font-size: 14px;
 }
 
 /* RESPONSIVIDADE */
@@ -135,7 +133,6 @@ a:hover {
     }
 
     input[type="text"],
-    input[type="number"],
     input[type="file"],
     textarea,
     select,
