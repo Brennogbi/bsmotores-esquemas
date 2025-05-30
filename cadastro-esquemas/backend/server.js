@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('mongoose');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const motorRoutes = require('./routes/motor');
