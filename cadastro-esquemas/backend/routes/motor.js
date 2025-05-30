@@ -1,4 +1,3 @@
-// routes/motor.js
 const express = require('express');
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -17,20 +16,33 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: 'motores',
-    allowed_formats: ['jpg', 'jpeg', 'png']
+    allowed_formats: ['jpg', 'jpeg', 'png', 'pdf']
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // Limite de 5MB por arquivo
+});
 
 // 📤 POST - Cadastrar motor
-router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
+router.post('/cadastrar', upload.fields([
+  { name: 'imagem', maxCount: 1 }, // Imagem principal
+  { name: 'arquivos', maxCount: 10 } // Até 10 arquivos adicionais (fotos ou PDFs)
+]), async (req, res) => {
   try {
     const { marca, cv, voltagem, tensao, tipoLigacao, observacoes } = req.body;
 
-    if (!req.file) {
-      return res.status(400).json({ erro: 'Imagem é obrigatória.' });
+    // Verifica se a imagem principal foi enviada
+    if (!req.files['imagem'] || !req.files['imagem'][0]) {
+      return res.status(400).json({ erro: 'Imagem principal é obrigatória.' });
     }
+
+    // URLs dos arquivos enviados
+    const imagemPrincipal = req.files['imagem'][0].path; // URL da imagem principal
+    const arquivosAdicionais = req.files['arquivos']
+      ? req.files['arquivos'].map(file => file.path) // URLs dos arquivos adicionais
+      : [];
 
     const novoMotor = new Motor({
       marca,
@@ -39,7 +51,8 @@ router.post('/cadastrar', upload.single('imagem'), async (req, res) => {
       tensao,
       tipoLigacao,
       observacoes,
-      imagem: req.file.path
+      imagem: imagemPrincipal,
+      arquivos: arquivosAdicionais
     });
 
     await novoMotor.save();
@@ -76,6 +89,18 @@ router.delete('/:id', async (req, res) => {
 
     if (!motor) {
       return res.status(404).json({ erro: 'Motor não encontrado.' });
+    }
+
+    // Remover arquivos do Cloudinary
+    if (motor.imagem) {
+      const publicId = motor.imagem.split('/').pop().split('.')[0];
+      await cloudinary.uploader.destroy(`motores/${publicId}`);
+    }
+    if (motor.arquivos && motor.arquivos.length > 0) {
+      for (const arquivo of motor.arquivos) {
+        const publicId = arquivo.split('/').pop().split('.')[0];
+        await cloudinary.uploader.destroy(`motores/${publicId}`);
+      }
     }
 
     res.json({ mensagem: 'Motor deletado com sucesso.' });

@@ -1,4 +1,3 @@
-// listar.js
 
 const formListar = document.getElementById('form-listar');
 const resultado = document.getElementById('resultado');
@@ -29,6 +28,19 @@ formListar.addEventListener('submit', async function (event) {
       const div = document.createElement('div');
       div.classList.add('esquema-item');
 
+      // Exibir arquivos adicionais, se houver
+      let arquivosHtml = '';
+      if (esquema.arquivos && esquema.arquivos.length > 0) {
+        arquivosHtml = '<p>Arquivos Adicionais:</p><ul>';
+        esquema.arquivos.forEach((arquivo, index) => {
+          const fileName = `Arquivo ${index + 1}${arquivo.endsWith('.pdf') ? ' (PDF)' : ' (Imagem)'}`;
+          arquivosHtml += `<li><a href="${arquivo}" target="_blank" download>${fileName}</et>`;
+        });
+        arquivosHtml += '</ul>';
+      } else {
+        arquivosHtml = '<p>Sem arquivos adicionais.</p>';
+      }
+
       div.innerHTML = `
         <h3>Marca: ${esquema.marca}</h3>
         <p>CV: ${esquema.cv}</p>
@@ -38,6 +50,7 @@ formListar.addEventListener('submit', async function (event) {
         <p>Observações: ${esquema.observacoes || '---'}</p>
         ${esquema.imagem ? `<img src="${esquema.imagem}" alt="Imagem do esquema" style="max-width: 300px;">` : '<p>Sem imagem</p>'}
         ${esquema.imagem ? `<br><a href="${esquema.imagem}" download target="_blank">📥 Baixar imagem</a>` : ''}
+        ${arquivosHtml}
         <button class="btn-deletar" data-id="${esquema._id}">🗑️ Deletar</button>
       `;
 

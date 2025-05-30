@@ -1,4 +1,3 @@
-// main.js
 
 const formCadastro = document.getElementById('form-cadastro');
 
@@ -18,7 +17,7 @@ formCadastro.addEventListener('submit', async function (event) {
       formCadastro.reset();
     } else {
       const erro = await response.json();
-      alert('❌ Erro ao cadastrar esquema: ' + (erro.message || 'Verifique os dados.'));
+      alert('❌ Erro ao cadastrar esquema: ' + (erro.detalhe || erro.erro || 'Verifique os dados.'));
     }
 
   } catch (err) {
