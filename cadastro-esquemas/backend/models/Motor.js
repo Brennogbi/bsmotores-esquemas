@@ -1,4 +1,3 @@
-// models/Motor.js
 const mongoose = require('mongoose');
 
 const MotorSchema = new mongoose.Schema({
@@ -8,7 +7,8 @@ const MotorSchema = new mongoose.Schema({
   tensao: { type: String, required: true },
   tipoLigacao: { type: String, enum: ['monofasico', 'trifasico'], required: true },
   observacoes: { type: String },
-  imagem: { type: String }
-});
+  imagem: { type: String },
+  arquivos: [{ type: String }], // 🔥 Novidade: múltiplos arquivos como PDF, esquemas, etc.
+}, { timestamps: true }); // 🔥 Adiciona createdAt e updatedAt automaticamente
 
 module.exports = mongoose.model('Motor', MotorSchema);

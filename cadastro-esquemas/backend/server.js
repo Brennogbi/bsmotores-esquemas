@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -19,7 +18,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+
+// Rotas
 app.use('/api/motores', motorRoutes);
 
 const PORT = process.env.PORT || 3000;

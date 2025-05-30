@@ -1,5 +1,3 @@
-// main.js
-
 const formCadastro = document.getElementById('form-cadastro');
 
 formCadastro.addEventListener('submit', async function (event) {
@@ -18,11 +16,11 @@ formCadastro.addEventListener('submit', async function (event) {
       formCadastro.reset();
     } else {
       const erro = await response.json();
-      alert('❌ Erro ao cadastrar esquema: ' + (erro.message || 'Verifique os dados.'));
+      alert('❌ Erro ao cadastrar: ' + (erro.message || 'Verifique os dados.'));
     }
 
   } catch (err) {
-    console.error('Erro ao conectar com o servidor:', err);
+    console.error('Erro:', err);
     alert('❌ Erro ao conectar com o servidor.');
   }
 });

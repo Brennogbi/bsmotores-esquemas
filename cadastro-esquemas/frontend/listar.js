@@ -1,5 +1,3 @@
-// listar.js
-
 const formListar = document.getElementById('form-listar');
 const resultado = document.getElementById('resultado');
 
@@ -36,7 +34,7 @@ formListar.addEventListener('submit', async function (event) {
         <p>Tensão: ${esquema.tensao}</p>
         <p>Tipo de Ligação: ${esquema.tipoLigacao}</p>
         <p>Observações: ${esquema.observacoes || '---'}</p>
-        ${esquema.imagem ? `<img src="${esquema.imagem}" alt="Imagem do esquema" style="max-width: 300px;">` : '<p>Sem imagem</p>'}
+        ${esquema.imagem ? `<img src="${esquema.imagem}" alt="Imagem do esquema">` : '<p>Sem imagem</p>'}
         ${esquema.imagem ? `<br><a href="${esquema.imagem}" download target="_blank">📥 Baixar imagem</a>` : ''}
         <button class="btn-deletar" data-id="${esquema._id}">🗑️ Deletar</button>
       `;
@@ -44,7 +42,7 @@ formListar.addEventListener('submit', async function (event) {
       resultado.appendChild(div);
     });
 
-    // Deleção de esquemas
+    // Deletar esquema
     document.querySelectorAll('.btn-deletar').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-id');
@@ -61,15 +59,15 @@ formListar.addEventListener('submit', async function (event) {
               alert('❌ Erro ao deletar esquema.');
             }
           } catch (err) {
-            console.error('Erro ao deletar:', err);
-            alert('❌ Erro de conexão com o servidor.');
+            console.error('Erro:', err);
+            alert('❌ Erro de conexão.');
           }
         }
       });
     });
 
   } catch (err) {
-    console.error('Erro ao buscar:', err);
+    console.error('Erro:', err);
     alert('❌ Erro ao buscar dados.');
   }
 });

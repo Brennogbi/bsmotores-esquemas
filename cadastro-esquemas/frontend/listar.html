@@ -1,4 +1,3 @@
-<!-- listar.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,30 +8,30 @@
 </head>
 <body>
 
-  <h1> Esquemas</h1>
+  <h1>Listagem de Esquemas</h1>
 
   <form id="form-listar">
     <label for="marcaBusca">Marca:</label>
-    <input type="text" id="marcaBusca" name="marca" placeholder="Marca" />
+    <input type="text" id="marcaBusca" name="marca" />
 
     <label for="cvBusca">CV:</label>
-    <input type="text" id="cvBusca" name="cv" placeholder="CV (ex: 1, 1/2, 3)" />
+    <input type="text" id="cvBusca" name="cv" />
 
     <label for="voltagemBusca">Voltagem:</label>
-    <input type="text" id="voltagemBusca" name="voltagem" placeholder="Voltagem" />
+    <input type="text" id="voltagemBusca" name="voltagem" />
 
     <label for="tensaoBusca">Tensão:</label>
-    <input type="text" id="tensaoBusca" name="tensao" placeholder="Tensão" />
+    <input type="text" id="tensaoBusca" name="tensao" />
 
     <label for="tipoLigacaoBusca">Tipo de Ligação:</label>
     <select id="tipoLigacaoBusca" name="tipoLigacao">
-      <option value="">Tipo de Ligação</option>
+      <option value="">Todos</option>
       <option value="monofasico">Monofásico</option>
       <option value="trifasico">Trifásico</option>
     </select>
 
-    <button type="submit">Procurar</button>
-    <a href="index.html">Voltar para Cadastro</a>
+    <button type="submit">Buscar</button>
+    <a href="index.html">Cadastrar Novo</a>
   </form>
 
   <div id="resultado"></div>
