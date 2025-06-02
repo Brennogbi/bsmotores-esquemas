@@ -121,6 +121,40 @@ a:hover {
     background: linear-gradient(90deg, #00ccff, #0066ff);
 }
 
+/* Estilos existentes */
+.esquema-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* Estilo para o botão de edição */
+.btn-editar {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.btn-editar:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo para o botão de deleção */
+.btn-deletar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.btn-deletar:hover {
+  background-color: #c82333;
+}
+
 /* RESPONSIVIDADE */
 @media (max-width: 480px) {
     body {

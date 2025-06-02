@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,20 +7,21 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Cadastro de Esquemas</h1>
+  <h1 id="titulo-form">Cadastro de Esquemas</h1>
 
   <form id="form-cadastro" enctype="multipart/form-data">
+    <input type="hidden" id="motorId" name="motorId">
     <label for="marca">Marca:</label><br>
     <input type="text" id="marca" name="marca" placeholder="Marca" required><br>
 
     <label for="cv">CV:</label><br>
-    <input type="text" id="cv" name="cv" placeholder="CV (ex: 1 1.2, 2 ,3 7.5 10)" pattern="^[0-9/ ]+$" required><br>
+    <input type="text" id="cv" name="cv" placeholder="CV (ex: 1, 1/2, 2, 3, 7.5, 10)" pattern="^[0-9/ ]+$" required><br>
 
     <label for="voltagem">Voltagem:</label><br>
     <input type="text" id="voltagem" name="voltagem" placeholder="110/220/380/440/660" required><br>
 
     <label for="tensao">Tensão:</label><br>
-    <input type="text" id="tensao" name="tensao" placeholder="alta  /baixa" required><br>
+    <input type="text" id="tensao" name="tensao" placeholder="alta/baixa" required><br>
 
     <label for="tipoLigacao">Tipo de Ligação:</label><br>
     <select id="tipoLigacao" name="tipoLigacao" required>
@@ -34,16 +34,18 @@
     <textarea id="observacoes" name="observacoes" placeholder="Observações" rows="4"></textarea><br>
 
     <label for="imagem">Imagem do Esquema (Principal):</label><br>
-    <input type="file" id="imagem" name="imagem" accept="image/jpeg,image/png" required><br>
+    <input type="file" id="imagem" name="imagem" accept="image/jpeg,image/png"><br>
+    <p id="imagemAtualContainer" style="display: none;">Imagem atual: <a id="imagemAtual" href="#" target="_blank"></a></p>
 
     <label for="arquivos">Arquivos Adicionais (Fotos ou PDFs):</label><br>
-    <input type="file" id="arquivos" name="arquivos" accept="image/jpeg,image/png,application/pdf" multiple><br><br>
+    <input type="file" id="arquivos" name="arquivos" accept="image/jpeg,image/png,application/pdf" multiple><br>
+    <p>Arquivos atuais:</p>
+    <ul id="arquivosAtuais"></ul>
 
-    <button type="submit">Cadastrar</button>
+    <button type="submit" id="botao-submit">Cadastrar</button>
     <a href="listar.html">Esquemas</a>
   </form>
 
   <script src="main.js"></script>
 </body>
 </html>
-```

@@ -1,4 +1,3 @@
-
 const formListar = document.getElementById('form-listar');
 const resultado = document.getElementById('resultado');
 
@@ -28,13 +27,12 @@ formListar.addEventListener('submit', async function (event) {
       const div = document.createElement('div');
       div.classList.add('esquema-item');
 
-      // Exibir arquivos adicionais, se houver
       let arquivosHtml = '';
       if (esquema.arquivos && esquema.arquivos.length > 0) {
         arquivosHtml = '<p>Arquivos Adicionais:</p><ul>';
         esquema.arquivos.forEach((arquivo, index) => {
           const fileName = `Arquivo ${index + 1}${arquivo.endsWith('.pdf') ? ' (PDF)' : ' (Imagem)'}`;
-          arquivosHtml += `<li><a href="${arquivo}" target="_blank" download>${fileName}</et>`;
+          arquivosHtml += `<li><a href="${arquivo}" target="_blank" download>${fileName}</a></li>`;
         });
         arquivosHtml += '</ul>';
       } else {
@@ -51,13 +49,22 @@ formListar.addEventListener('submit', async function (event) {
         ${esquema.imagem ? `<img src="${esquema.imagem}" alt="Imagem do esquema" style="max-width: 300px;">` : '<p>Sem imagem</p>'}
         ${esquema.imagem ? `<br><a href="${esquema.imagem}" download target="_blank">📥 Baixar imagem</a>` : ''}
         ${arquivosHtml}
+        <button class="btn-editar" data-id="${esquema._id}">✏️ Editar</button>
         <button class="btn-deletar" data-id="${esquema._id}">🗑️ Deletar</button>
       `;
 
       resultado.appendChild(div);
     });
 
-    // Deleção de esquemas
+    // Ação do botão Editar
+    document.querySelectorAll('.btn-editar').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        window.location.href = `index.html?id=${id}`;
+      });
+    });
+
+    // Ação do botão Deletar
     document.querySelectorAll('.btn-deletar').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-id');
