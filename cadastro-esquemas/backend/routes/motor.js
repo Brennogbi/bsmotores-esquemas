@@ -81,6 +81,58 @@ router.get('/buscar', async (req, res) => {
   }
 });
 
+// ✏️ PUT - Editar motor por ID
+router.put('/:id', upload.fields([
+  { name: 'imagem', maxCount: 1 }, // Imagem principal (opcional)
+  { name: 'arquivos', maxCount: 10 } // Arquivos adicionais (opcional)
+]), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { marca, cv, voltagem, tensao, tipoLigacao, observacoes } = req.body;
+
+    // Buscar motor existente
+    const motor = await Motor.findById(id);
+    if (!motor) {
+      return res.status(404).json({ erro: 'Motor não encontrado.' });
+    }
+
+    // Atualizar campos de texto
+    motor.marca = marca || motor.marca;
+    motor.cv = cv || motor.cv;
+    motor.voltagem = voltagem || motor.voltagem;
+    motor.tensao = tensao || motor.tensao;
+    motor.tipoLigacao = tipoLigacao || motor.tipoLigacao;
+    motor.observacoes = observacoes || motor.observacoes;
+
+    // Atualizar imagem principal, se fornecida
+    if (req.files['imagem'] && req.files['imagem'][0]) {
+      // Remover imagem antiga do Cloudinary
+      if (motor.imagem) {
+        const publicId = motor.imagem.split('/').pop().split('.')[0];
+        await cloudinary.uploader.destroy(`motores/${publicId}`);
+      }
+      motor.imagem = req.files['imagem'][0].path;
+    }
+
+    // Atualizar arquivos adicionais, se fornecidos
+    if (req.files['arquivos']) {
+      // Remover arquivos antigos do Cloudinary
+      if (motor.arquivos && motor.arquivos.length > 0) {
+        for (const arquivo of motor.arquivos) {
+          const publicId = arquivo.split('/').pop().split('.')[0];
+          await cloudinary.uploader.destroy(`motores/${publicId}`);
+        }
+      }
+      motor.arquivos = req.files['arquivos'].map(file => file.path);
+    }
+
+    await motor.save();
+    res.json({ mensagem: 'Motor atualizado com sucesso', motor });
+  } catch (erro) {
+    res.status(500).json({ erro: 'Erro ao atualizar motor', detalhe: erro.message });
+  }
+});
+
 // ❌ DELETE - Remover motor por ID
 router.delete('/:id', async (req, res) => {
   try {
