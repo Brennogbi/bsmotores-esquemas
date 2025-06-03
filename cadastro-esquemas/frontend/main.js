@@ -125,7 +125,7 @@ formCadastro.addEventListener('submit', async function (event) {
       alert('❌ Erro: ' + (erro.detalhe || erro.erro || 'Verifique os dados.'));
     }
   } catch (err) {
-    console.error('Erro ao conectar com o servidor:', err);
+    console.error('Erro ao conectaar com o servidor:', err);
     alert('❌ Erro ao conectar com o servidor.');
   }
 });
