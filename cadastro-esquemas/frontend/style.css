@@ -155,6 +155,11 @@ a:hover {
   background-color: #c82333;
 }
 
+/* Estilo para os checkboxes de arquivos */
+#arquivosAtuais input[type="checkbox"] {
+  margin-right: 10px;
+}
+
 /* RESPONSIVIDADE */
 @media (max-width: 480px) {
     body {

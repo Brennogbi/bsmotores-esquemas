@@ -49,7 +49,10 @@ const preencherFormulario = async () => {
         motor.arquivos.forEach((arquivo, index) => {
           const li = document.createElement('li');
           const fileName = `Arquivo ${index + 1}${arquivo.endsWith('.pdf') ? ' (PDF)' : ' (Imagem)'}`;
-          li.innerHTML = `<a href="${arquivo}" target="_blank">${fileName}</a>`;
+          li.innerHTML = `
+            <input type="checkbox" name="manterArquivo" value="${arquivo}" checked>
+            <a href="${arquivo}" target="_blank">${fileName}</a>
+          `;
           arquivosAtuaisList.appendChild(li);
         });
       } else {
@@ -80,6 +83,16 @@ formCadastro.addEventListener('submit', async function (event) {
 
   const formData = new FormData(formCadastro);
   const motorId = motorIdInput.value;
+
+  // Adicionar arquivos a manter, se for edição
+  if (motorId) {
+    const arquivosParaManter = [];
+    document.querySelectorAll('input[name="manterArquivo"]:checked').forEach(checkbox => {
+      arquivosParaManter.push(checkbox.value);
+    });
+    formData.append('arquivosParaManter', JSON.stringify(arquivosParaManter));
+  }
+
   const method = motorId ? 'PUT' : 'POST';
   const url = motorId
     ? `https://bsmotores-esquemas.onrender.com/api/motores/${motorId}`

@@ -65,7 +65,7 @@ router.post('/cadastrar', upload.fields([
 // 🔍 GET - Buscar motores com filtros
 router.get('/buscar', async (req, res) => {
   try {
-    const { marca, cv, voltagem, tensao, tipoLigacao } = req.query;
+    const { marca, cv, voltagem, tensao, tipoLigacao, _id } = req.query;
 
     const filtro = {};
     if (marca) filtro.marca = new RegExp(marca, 'i');
@@ -73,6 +73,7 @@ router.get('/buscar', async (req, res) => {
     if (voltagem) filtro.voltagem = voltagem;
     if (tensao) filtro.tensao = tensao;
     if (tipoLigacao) filtro.tipoLigacao = tipoLigacao;
+    if (_id) filtro._id = _id;
 
     const motores = await Motor.find(filtro);
     res.json(motores);
@@ -88,7 +89,7 @@ router.put('/:id', upload.fields([
 ]), async (req, res) => {
   try {
     const { id } = req.params;
-    const { marca, cv, voltagem, tensao, tipoLigacao, observacoes } = req.body;
+    const { marca, cv, voltagem, tensao, tipoLigacao, observacoes, arquivosParaManter } = req.body;
 
     // Buscar motor existente
     const motor = await Motor.findById(id);
@@ -114,16 +115,27 @@ router.put('/:id', upload.fields([
       motor.imagem = req.files['imagem'][0].path;
     }
 
-    // Atualizar arquivos adicionais, se fornecidos
-    if (req.files['arquivos']) {
-      // Remover arquivos antigos do Cloudinary
+    // Atualizar arquivos adicionais
+    if (req.files['arquivos'] || arquivosParaManter) {
+      // Lista de arquivos a manter (enviada pelo frontend)
+      const arquivosMantidos = arquivosParaManter ? JSON.parse(arquivosParaManter) : [];
+
+      // Remover arquivos que não estão na lista de mantidos
       if (motor.arquivos && motor.arquivos.length > 0) {
         for (const arquivo of motor.arquivos) {
-          const publicId = arquivo.split('/').pop().split('.')[0];
-          await cloudinary.uploader.destroy(`motores/${publicId}`);
+          if (!arquivosMantidos.includes(arquivo)) {
+            const publicId = arquivo.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(`motores/${publicId}`);
+          }
         }
       }
-      motor.arquivos = req.files['arquivos'].map(file => file.path);
+
+      // Filtrar arquivos mantidos e adicionar novos
+      motor.arquivos = arquivosMantidos.filter(arquivo => motor.arquivos.includes(arquivo));
+      if (req.files['arquivos']) {
+        const novosArquivos = req.files['arquivos'].map(file => file.path);
+        motor.arquivos = [...motor.arquivos, ...novosArquivos];
+      }
     }
 
     await motor.save();
