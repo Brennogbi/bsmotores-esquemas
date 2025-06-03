@@ -144,7 +144,7 @@ a:hover {
 
 /* Estilo para o botão de deleção */
 .btn-deletar {
-  background-color: #35dc51;
+  background-color: #dc3545;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -153,11 +153,6 @@ a:hover {
 
 .btn-deletar:hover {
   background-color: #c82333;
-}
-
-/* Estilo para os checkboxes de arquivos */
-#arquivosAtuais input[type="checkbox"] {
-  margin-right: 10px;
 }
 
 /* RESPONSIVIDADE */
