@@ -1,5 +1,18 @@
 const formListar = document.getElementById('form-listar');
 const resultado = document.getElementById('resultado');
+const totalEsquemas = document.getElementById('total-esquemas');
+
+// Função para atualizar o contador de esquemas
+const atualizarContador = async () => {
+  try {
+    const response = await fetch('https://bsmotores-esquemas.onrender.com/api/motores/contar');
+    const data = await response.json();
+    totalEsquemas.textContent = data.total || 0;
+  } catch (err) {
+    console.error('Erro ao contar esquemas:', err);
+    totalEsquemas.textContent = 'Erro';
+  }
+};
 
 formListar.addEventListener('submit', async function (event) {
   event.preventDefault();
@@ -45,7 +58,7 @@ formListar.addEventListener('submit', async function (event) {
         <p>Voltagem: ${esquema.voltagem}</p>
         <p>Tensão: ${esquema.tensao}</p>
         <p>Tipo de Ligação: ${esquema.tipoLigacao}</p>
-        <p>Observações: ${esquema.observacoes || '---'}</p>
+        <p class="observacoes">Observações: ${esquema.observacoes ? esquema.observacoes.replace(/\n/g, '<br>') : '---'}</p>
         ${esquema.imagem ? `<img src="${esquema.imagem}" alt="Imagem do esquema" style="max-width: 300px;">` : '<p>Sem imagem</p>'}
         ${esquema.imagem ? `<br><a href="${esquema.imagem}" download target="_blank">📥 Baixar imagem</a>` : ''}
         ${arquivosHtml}
@@ -76,7 +89,8 @@ formListar.addEventListener('submit', async function (event) {
 
             if (deleteResponse.ok) {
               alert('✅ Esquema deletado com sucesso!');
-              formListar.dispatchEvent(new Event('submit'));
+              formListar.dispatchEvent(new Event('submit')); // Atualizar lista
+              atualizarContador(); // Atualizar contador
             } else {
               alert('❌ Erro ao deletar esquema.');
             }
@@ -88,8 +102,14 @@ formListar.addEventListener('submit', async function (event) {
       });
     });
 
+    // Atualizar contador após carregar a lista
+    atualizarContador();
+
   } catch (err) {
     console.error('Erro ao buscar:', err);
     alert('❌ Erro ao buscar dados.');
   }
 });
+
+// Carregar contador ao abrir a página
+document.addEventListener('DOMContentLoaded', atualizarContador);

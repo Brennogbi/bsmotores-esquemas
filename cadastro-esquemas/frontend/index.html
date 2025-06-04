@@ -8,6 +8,7 @@
 </head>
 <body>
   <h1 id="titulo-form">Cadastro de Esquemas</h1>
+  <p id="contador-esquemas">Total de esquemas: <span id="total-esquemas">0</span></p>
 
   <form id="form-cadastro" enctype="multipart/form-data">
     <input type="hidden" id="motorId" name="motorId">
@@ -31,7 +32,7 @@
     </select><br>
 
     <label for="observacoes">Observações:</label><br>
-    <textarea id="observacoes" name="observacoes" placeholder="Observações" rows="4"></textarea><br>
+    <textarea id="observacoes" name="observacoes" placeholder="Observações (digite uma linha por item, se desejar uma lista)" rows="4"></textarea><br>
 
     <label for="imagem">Imagem do Esquema (Principal):</label><br>
     <input type="file" id="imagem" name="imagem" accept="image/jpeg,image/png"><br>

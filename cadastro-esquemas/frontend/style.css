@@ -155,6 +155,23 @@ a:hover {
   background-color: #c82333;
 }
 
+/* Estilo para os checkboxes de arquivos */
+#arquivosAtuais input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Estilo para o campo observações */
+.observacoes {
+  white-space: pre-wrap; /* Preserva quebras de linha */
+  margin: 10px 0;
+}
+
+/* Estilo para o contador */
+#contador-esquemas {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
 /* RESPONSIVIDADE */
 @media (max-width: 480px) {
     body {

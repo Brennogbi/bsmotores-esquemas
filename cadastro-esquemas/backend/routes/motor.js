@@ -82,6 +82,16 @@ router.get('/buscar', async (req, res) => {
   }
 });
 
+// 📊 GET - Contar total de motores
+router.get('/contar', async (req, res) => {
+  try {
+    const total = await Motor.countDocuments();
+    res.json({ total });
+  } catch (erro) {
+    res.status(500).json({ erro: 'Erro ao contar motores', detalhe: erro.message });
+  }
+});
+
 // ✏️ PUT - Editar motor por ID
 router.put('/:id', upload.fields([
   { name: 'imagem', maxCount: 1 }, // Imagem principal (opcional)

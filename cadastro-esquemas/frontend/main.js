@@ -5,6 +5,23 @@ const botaoSubmit = document.getElementById('botao-submit');
 const imagemAtualLink = document.getElementById('imagemAtual');
 const imagemAtualContainer = document.getElementById('imagemAtualContainer');
 const arquivosAtuaisList = document.getElementById('arquivosAtuais');
+const totalEsquemas = document.getElementById('total-esquemas');
+
+// Função para atualizar o contador de esquemas
+const atualizarContador = async () => {
+  try {
+    const response = await fetch('https://bsmotores-esquemas.onrender.com/api/motores/contar');
+    const data = await response.json();
+    if (totalEsquemas) {
+      totalEsquemas.textContent = data.total || 0;
+    }
+  } catch (err) {
+    console.error('Erro ao contar esquemas:', err);
+    if (totalEsquemas) {
+      totalEsquemas.textContent = 'Erro';
+    }
+  }
+};
 
 // Função para obter o ID do motor da URL
 const getMotorId = () => {
@@ -75,6 +92,8 @@ const preencherFormulario = async () => {
       window.location.href = 'listar.html';
     }
   }
+  // Atualizar contador ao carregar a página
+  atualizarContador();
 };
 
 // Enviar dados do formulário (cadastro ou edição)
@@ -125,10 +144,10 @@ formCadastro.addEventListener('submit', async function (event) {
       alert('❌ Erro: ' + (erro.detalhe || erro.erro || 'Verifique os dados.'));
     }
   } catch (err) {
-    console.error('Erro ao conectaar com o servidor:', err);
+    console.error('Erro ao conectar com o servidor:', err);
     alert('❌ Erro ao conectar com o servidor.');
   }
 });
 
-// Carregar dados do motor, se for edição
+// Carregar dados do motor e contador, se for edição
 document.addEventListener('DOMContentLoaded', preencherFormulario);
