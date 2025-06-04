@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const motorSchema = new mongoose.Schema({
   marca: { type: String, required: true },
   cv: { type: String, required: true }, // Corrigido: 'Text' não é um tipo válido, usei String
-  voltagem: { type: Number, required: true },
+  voltagem: { type: String, required: true },
   tensao: { type: Number, required: true },
   tipoLigacao: { type: String, required: true },
   observacoes: { type: String },
