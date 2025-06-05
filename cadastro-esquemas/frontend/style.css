@@ -27,7 +27,8 @@ form {
     border-radius: 10px;
     backdrop-filter: blur(5px);
     box-shadow: 0 0 10px #0ff;
-    max-width: 500px;
+    max-width: 600px; /* Aumentado para melhor uso em tablets */
+    width: 100%;
     margin: 20px auto;
     animation: slideIn 0.7s ease;
 }
@@ -51,6 +52,7 @@ select {
     outline: none;
     background: #1c1c3c;
     color: #0ff;
+    font-size: 16px;
 }
 
 /* Botões */
@@ -63,9 +65,34 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: transform 0.3s, background 0.3s;
+    font-size: 16px;
+    width: 100%;
+    text-align: center;
 }
 
 button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #00ccff, #0066ff);
+}
+
+/* Links como botões */
+a {
+    text-decoration: none;
+    background: linear-gradient(90deg, #0066ff, #00ccff);
+    color: #fff;
+    border: none;
+    margin-top: 15px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    display: inline-block;
+    font-size: 16px;
+    width: 100%;
+    text-align: center;
+}
+
+a:hover {
     transform: scale(1.05);
     background: linear-gradient(90deg, #00ccff, #0066ff);
 }
@@ -75,11 +102,13 @@ button:hover {
     margin-top: 30px;
 }
 
+/* Item da listagem (consolidado) */
 .esquema-item {
     background-color: rgba(255, 255, 255, 0.05);
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 10px;
+    box-shadow: 0 0 5px #0ff;
     animation: fadeIn 0.5s ease-in;
 }
 
@@ -100,144 +129,240 @@ button:hover {
 h1 {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 28px;
 }
 
-/* Links como botões */
-a {
-    text-decoration: none;
-    background: linear-gradient(90deg, #0066ff, #00ccff);
-    color: #fff;
+/* Botões de edição e deleção */
+.btn-editar {
+    background-color: #007bff;
+    color: white;
     border: none;
-    margin-top: 15px;
-    padding: 10px 20px;
+    padding: 8px 15px;
+    margin-right: 5px;
     border-radius: 5px;
     cursor: pointer;
-    transition: transform 0.3s, background 0.3s;
-    display: inline-block;
-}
-
-a:hover {
-    transform: scale(1.05); /* Corrigido: estava 2.05 */
-    background: linear-gradient(90deg, #00ccff, #0066ff);
-}
-
-/* Estilos existentes */
-.esquema-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-/* Estilo para o botão de edição */
-.btn-editar {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  margin-right: 5px;
-  cursor: pointer;
+    transition: background 0.3s;
 }
 
 .btn-editar:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
 
-/* Estilo para o botão de deleção */
 .btn-deletar {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 .btn-deletar:hover {
-  background-color: #c82333;
+    background-color: #c82333;
 }
 
-/* Estilo para os checkboxes de arquivos */
+/* Checkboxes de arquivos */
 #arquivosAtuais input[type="checkbox"] {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
-/* Estilo para o campo observações */
+/* Campo observações */
 .observacoes {
-  white-space: pre-wrap; /* Preserva quebras de linha */
-  margin: 10px 0;
+    white-space: pre-wrap; /* Preserva quebras de linha */
+    margin: 10px 0;
+    font-size: 16px;
 }
 
-/* Estilo para o contador */
+/* Contador */
 #contador-esquemas {
-  font-weight: bold;
-  margin-bottom: 10px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
 }
 
-/* Estilo para o spinner de carregamento */
+/* Spinner de carregamento */
 .loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
-  z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
 .spinner {
-  border: 4px solid #f3f3f3; /* Cor clara */
-  border-top: 4px solid #007bff; /* Cor principal */
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .loading p {
-  color: white;
-  margin-top: 10px;
-  font-size: 16px;
+    color: white;
+    margin-top: 10px;
+    font-size: 16px;
 }
-/* RESPONSIVIDADE */
-@media (max-width: 480px) {
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    /* Laptops e tablets grandes */
+    form {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    button, a {
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .esquema-item {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Tablets */
     body {
-        padding: 10px;
+        padding: 15px;
     }
 
     form {
+        max-width: 95%;
         padding: 15px;
-        margin: 10px;
     }
 
     input[type="text"],
     input[type="file"],
     textarea,
-    select,
-    button,
-    a {
-        font-size: 16px;
-        padding: 10px;
+    select {
+        font-size: 15px;
+        padding: 8px;
     }
 
     h1 {
         font-size: 22px;
     }
 
-    button,
-    a {
-        width: 100%;
-        text-align: center;
+    button, a {
+        padding: 8px 12px;
+        font-size: 14px;
     }
 
     .esquema-item {
-        padding: 15px;
+        padding: 12px;
+    }
+
+    #contador-esquemas {
+        font-size: 16px;
+    }
+
+    .observacoes {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Smartphones */
+    body {
+        padding: 10px;
+    }
+
+    form {
+        max-width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    textarea,
+    select {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    button, a {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .esquema-item {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    .btn-editar, .btn-deletar {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    #contador-esquemas {
+        font-size: 14px;
+    }
+
+    .observacoes {
+        font-size: 14px;
+    }
+
+    .spinner {
+        width: 30px;
+        height: 30px;
+        border-width: 3px;
+    }
+
+    .loading p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 320px) {
+    /* Smartphones muito pequenos */
+    h1 {
+        font-size: 18px;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    textarea,
+    select {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+    button, a {
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+
+    .esquema-item {
+        padding: 8px;
+    }
+
+    .btn-editar, .btn-deletar {
+        padding: 5px 8px;
+        font-size: 12px;
     }
 }
