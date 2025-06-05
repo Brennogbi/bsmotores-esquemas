@@ -1,9 +1,16 @@
 const formListar = document.getElementById('form-listar');
 const resultado = document.getElementById('resultado');
 const totalEsquemas = document.getElementById('total-esquemas');
+const loading = document.getElementById('loading');
+
+// Função para mostrar/esconder o spinner
+const toggleLoading = (show) => {
+  loading.style.display = show ? 'flex' : 'none';
+};
 
 // Função para atualizar o contador de esquemas
 const atualizarContador = async () => {
+  toggleLoading(true);
   try {
     const response = await fetch('https://bsmotores-esquemas.onrender.com/api/motores/contar');
     const data = await response.json();
@@ -11,11 +18,14 @@ const atualizarContador = async () => {
   } catch (err) {
     console.error('Erro ao contar esquemas:', err);
     totalEsquemas.textContent = 'Erro';
+  } finally {
+    toggleLoading(false);
   }
 };
 
 formListar.addEventListener('submit', async function (event) {
   event.preventDefault();
+  toggleLoading(true);
 
   const params = new URLSearchParams({
     marca: document.getElementById('marcaBusca').value,
@@ -82,6 +92,7 @@ formListar.addEventListener('submit', async function (event) {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-id');
         if (confirm('Tem certeza que deseja deletar este esquema?')) {
+          toggleLoading(true);
           try {
             const deleteResponse = await fetch(`https://bsmotores-esquemas.onrender.com/api/motores/${id}`, {
               method: 'DELETE',
@@ -97,6 +108,8 @@ formListar.addEventListener('submit', async function (event) {
           } catch (err) {
             console.error('Erro ao deletar:', err);
             alert('❌ Erro de conexão com o servidor.');
+          } finally {
+            toggleLoading(false);
           }
         }
       });
@@ -108,6 +121,8 @@ formListar.addEventListener('submit', async function (event) {
   } catch (err) {
     console.error('Erro ao buscar:', err);
     alert('❌ Erro ao buscar dados.');
+  } finally {
+    toggleLoading(false);
   }
 });
 

@@ -6,9 +6,16 @@ const imagemAtualLink = document.getElementById('imagemAtual');
 const imagemAtualContainer = document.getElementById('imagemAtualContainer');
 const arquivosAtuaisList = document.getElementById('arquivosAtuais');
 const totalEsquemas = document.getElementById('total-esquemas');
+const loading = document.getElementById('loading');
+
+// Função para mostrar/esconder o spinner
+const toggleLoading = (show) => {
+  loading.style.display = show ? 'flex' : 'none';
+};
 
 // Função para atualizar o contador de esquemas
 const atualizarContador = async () => {
+  toggleLoading(true);
   try {
     const response = await fetch('https://bsmotores-esquemas.onrender.com/api/motores/contar');
     const data = await response.json();
@@ -20,6 +27,8 @@ const atualizarContador = async () => {
     if (totalEsquemas) {
       totalEsquemas.textContent = 'Erro';
     }
+  } finally {
+    toggleLoading(false);
   }
 };
 
@@ -33,6 +42,7 @@ const getMotorId = () => {
 const preencherFormulario = async () => {
   const motorId = getMotorId();
   if (motorId) {
+    toggleLoading(true);
     try {
       const response = await fetch(`https://bsmotores-esquemas.onrender.com/api/motores/buscar?_id=${motorId}`);
       const data = await response.json();
@@ -90,6 +100,8 @@ const preencherFormulario = async () => {
       console.error('Erro ao carregar motor:', err);
       alert('❌ Erro ao carregar dados do motor.');
       window.location.href = 'listar.html';
+    } finally {
+      toggleLoading(false);
     }
   }
   // Atualizar contador ao carregar a página
@@ -99,6 +111,7 @@ const preencherFormulario = async () => {
 // Enviar dados do formulário (cadastro ou edição)
 formCadastro.addEventListener('submit', async function (event) {
   event.preventDefault();
+  toggleLoading(true);
 
   const formData = new FormData(formCadastro);
   const motorId = motorIdInput.value;
@@ -146,6 +159,8 @@ formCadastro.addEventListener('submit', async function (event) {
   } catch (err) {
     console.error('Erro ao conectar com o servidor:', err);
     alert('❌ Erro ao conectar com o servidor.');
+  } finally {
+    toggleLoading(false);
   }
 });
 
