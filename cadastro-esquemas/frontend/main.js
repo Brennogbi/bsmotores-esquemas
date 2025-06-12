@@ -86,10 +86,8 @@ const preencherFormulario = async () => {
         arquivosAtuaisList.innerHTML = '<li>Nenhum arquivo adicional</li>';
       }
 
-      // Alterar o título e o texto do botão para modo de edição
       tituloForm.textContent = 'Editar Esquema';
       botaoSubmit.textContent = 'Salvar Alterações';
-      // Tornar campos não obrigatórios para edição
       document.getElementById('marca').removeAttribute('required');
       document.getElementById('cv').removeAttribute('required');
       document.getElementById('voltagem').removeAttribute('required');
@@ -104,7 +102,6 @@ const preencherFormulario = async () => {
       toggleLoading(false);
     }
   }
-  // Atualizar contador ao carregar a página
   atualizarContador();
 };
 
@@ -116,7 +113,6 @@ formCadastro.addEventListener('submit', async function (event) {
   const formData = new FormData(formCadastro);
   const motorId = motorIdInput.value;
 
-  // Adicionar arquivos a manter, se for edição
   if (motorId) {
     const arquivosParaManter = [];
     document.querySelectorAll('input[name="manterArquivo"]:checked').forEach(checkbox => {
@@ -144,13 +140,12 @@ formCadastro.addEventListener('submit', async function (event) {
       botaoSubmit.textContent = 'Cadastrar';
       imagemAtualContainer.style.display = 'none';
       arquivosAtuaisList.innerHTML = '';
-      // Restaurar required para cadastro
       document.getElementById('marca').setAttribute('required', '');
       document.getElementById('cv').setAttribute('required', '');
       document.getElementById('voltagem').setAttribute('required', '');
       document.getElementById('tensao').setAttribute('required', '');
       document.getElementById('tipoLigacao').setAttribute('required', '');
-      document.getElementById('imagem').setAttribute('required', '');
+      // Imagem não precisa de required
       window.location.href = 'listar.html';
     } else {
       const erro = await response.json();
@@ -164,5 +159,5 @@ formCadastro.addEventListener('submit', async function (event) {
   }
 });
 
-// Carregar dados do motor e contador, se for edição
+// Carregar dados do motor e contador
 document.addEventListener('DOMContentLoaded', preencherFormulario);
