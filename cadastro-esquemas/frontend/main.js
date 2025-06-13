@@ -61,6 +61,7 @@ const preencherFormulario = async () => {
       document.getElementById('tensao').value = motor.tensao;
       document.getElementById('tipoLigacao').value = motor.tipoLigacao;
       document.getElementById('observacoes').value = motor.observacoes || '';
+      document.getElementById('codigo').value = motor.codigo || ''; // Novo campo
 
       if (motor.imagem) {
         imagemAtualLink.href = motor.imagem;
@@ -94,6 +95,7 @@ const preencherFormulario = async () => {
       document.getElementById('tensao').removeAttribute('required');
       document.getElementById('tipoLigacao').removeAttribute('required');
       document.getElementById('imagem').removeAttribute('required');
+      document.getElementById('codigo').removeAttribute('required');
     } catch (err) {
       console.error('Erro ao carregar motor:', err);
       alert('❌ Erro ao carregar dados do motor.');
@@ -145,7 +147,6 @@ formCadastro.addEventListener('submit', async function (event) {
       document.getElementById('voltagem').setAttribute('required', '');
       document.getElementById('tensao').setAttribute('required', '');
       document.getElementById('tipoLigacao').setAttribute('required', '');
-      // Imagem não precisa de required
       window.location.href = 'listar.html';
     } else {
       const erro = await response.json();

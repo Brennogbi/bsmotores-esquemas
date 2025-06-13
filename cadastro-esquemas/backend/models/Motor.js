@@ -7,7 +7,8 @@ const motorSchema = new mongoose.Schema({
   tensao: { type: String, required: true },
   tipoLigacao: { type: String, required: true },
   observacoes: { type: String },
-  imagem: { type: String }, // Removido required: true para tornar opcional
+  codigo: { type: String }, // Novo campo, não obrigatório
+  imagem: { type: String },
   arquivos: [{ type: String }],
 }, { timestamps: true });
 

@@ -32,7 +32,8 @@ formListar.addEventListener('submit', async function (event) {
     cv: document.getElementById('cvBusca').value,
     voltagem: document.getElementById('voltagemBusca').value,
     tensao: document.getElementById('tensaoBusca').value,
-    tipoLigacao: document.getElementById('tipoLigacaoBusca').value
+    tipoLigacao: document.getElementById('tipoLigacaoBusca').value,
+    codigo: document.getElementById('codigoBusca').value // Novo campo
   });
 
   try {
@@ -68,6 +69,7 @@ formListar.addEventListener('submit', async function (event) {
         <p>Voltagem: ${esquema.voltagem}</p>
         <p>Tensão: ${esquema.tensao}</p>
         <p>Tipo de Ligação: ${esquema.tipoLigacao}</p>
+        <p>Código: ${esquema.codigo || '---'}</p>
         <p class="observacoes">Observações: ${esquema.observacoes ? esquema.observacoes.replace(/\n/g, '<br>') : '---'}</p>
         ${esquema.imagem ? `<img src="${esquema.imagem}" alt="Imagem do esquema" style="max-width: 300px;">` : '<p>Sem imagem</p>'}
         ${esquema.imagem ? `<br><a href="${esquema.imagem}" download target="_blank">📥 Baixar imagem</a>` : ''}
@@ -79,7 +81,6 @@ formListar.addEventListener('submit', async function (event) {
       resultado.appendChild(div);
     });
 
-    // Ação do botão Editar
     document.querySelectorAll('.btn-editar').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-id');
@@ -87,7 +88,6 @@ formListar.addEventListener('submit', async function (event) {
       });
     });
 
-    // Ação do botão Deletar
     document.querySelectorAll('.btn-deletar').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-id');
@@ -100,8 +100,8 @@ formListar.addEventListener('submit', async function (event) {
 
             if (deleteResponse.ok) {
               alert('✅ Esquema deletado com sucesso!');
-              formListar.dispatchEvent(new Event('submit')); // Atualizar lista
-              atualizarContador(); // Atualizar contador
+              formListar.dispatchEvent(new Event('submit'));
+              atualizarContador();
             } else {
               alert('❌ Erro ao deletar esquema.');
             }
@@ -115,7 +115,6 @@ formListar.addEventListener('submit', async function (event) {
       });
     });
 
-    // Atualizar contador após carregar a lista
     atualizarContador();
 
   } catch (err) {
@@ -126,5 +125,4 @@ formListar.addEventListener('submit', async function (event) {
   }
 });
 
-// Carregar contador ao abrir a página
 document.addEventListener('DOMContentLoaded', atualizarContador);

@@ -12,7 +12,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Configuração de armazenamento para imagem principal (pasta 'motores')
 const storageImagem = new CloudinaryStorage({
   cloudinary,
   params: {
@@ -21,7 +20,6 @@ const storageImagem = new CloudinaryStorage({
   }
 });
 
-// Configuração de armazenamento para arquivos adicionais (pasta temporária 'motores')
 const storageArquivos = new CloudinaryStorage({
   cloudinary,
   params: {
@@ -32,12 +30,12 @@ const storageArquivos = new CloudinaryStorage({
 
 const upload = multer({
   storage: storageImagem,
-  limits: { fileSize: 5 * 1024 * 1024 } // Limite de 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 const uploadArquivos = multer({
   storage: storageArquivos,
-  limits: { fileSize: 5 * 1024 * 1024 } // Limite de 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 // 📤 POST - Cadastrar motor
@@ -46,14 +44,12 @@ router.post('/cadastrar', upload.fields([
   { name: 'arquivos', maxCount: 10 }
 ]), async (req, res) => {
   try {
-    const { marca, cv, voltagem, tensao, tipoLigacao, observacoes } = req.body;
+    const { marca, cv, voltagem, tensao, tipoLigacao, observacoes, codigo } = req.body;
 
-    // Imagem principal é opcional
     const imagemPrincipal = req.files['imagem'] && req.files['imagem'][0]
       ? req.files['imagem'][0].path
       : null;
 
-    // Criar motor sem arquivos adicionais primeiro
     const novoMotor = new Motor({
       marca,
       cv,
@@ -61,13 +57,13 @@ router.post('/cadastrar', upload.fields([
       tensao,
       tipoLigacao,
       observacoes,
+      codigo, // Novo campo
       imagem: imagemPrincipal,
       arquivos: []
     });
 
     await novoMotor.save();
 
-    // Mover arquivos adicionais para subpasta 'motores/<motorId>/adicionais'
     let arquivosAdicionais = [];
     if (req.files['arquivos']) {
       const subpasta = `motores/${novoMotor._id}/adicionais`;
@@ -78,7 +74,6 @@ router.post('/cadastrar', upload.fields([
           public_id: publicIdOriginal
         });
         arquivosAdicionais.push(novoCaminho.secure_url);
-        // Remover arquivo temporário da pasta 'motores'
         await cloudinary.uploader.destroy(`motores/${publicIdOriginal}`);
       }
       novoMotor.arquivos = arquivosAdicionais;
@@ -94,7 +89,7 @@ router.post('/cadastrar', upload.fields([
 // 🔍 GET - Buscar motores com filtros
 router.get('/buscar', async (req, res) => {
   try {
-    const { marca, cv, voltagem, tensao, tipoLigacao, _id } = req.query;
+    const { marca, cv, voltagem, tensao, tipoLigacao, codigo, _id } = req.query;
 
     const filtro = {};
     if (marca) filtro.marca = new RegExp(marca, 'i');
@@ -102,6 +97,7 @@ router.get('/buscar', async (req, res) => {
     if (voltagem) filtro.voltagem = voltagem;
     if (tensao) filtro.tensao = tensao;
     if (tipoLigacao) filtro.tipoLigacao = tipoLigacao;
+    if (codigo) filtro.codigo = new RegExp(codigo, 'i'); // Novo filtro
     if (_id) filtro._id = _id;
 
     const motores = await Motor.find(filtro);
@@ -128,7 +124,7 @@ router.put('/:id', upload.fields([
 ]), async (req, res) => {
   try {
     const { id } = req.params;
-    const { marca, cv, voltagem, tensao, tipoLigacao, observacoes, arquivosParaManter } = req.body;
+    const { marca, cv, voltagem, tensao, tipoLigacao, observacoes, codigo, arquivosParaManter } = req.body;
 
     const motor = await Motor.findById(id);
     if (!motor) {
@@ -141,8 +137,8 @@ router.put('/:id', upload.fields([
     motor.tensao = tensao || motor.tensao;
     motor.tipoLigacao = tipoLigacao || motor.tipoLigacao;
     motor.observacoes = observacoes || motor.observacoes;
+    motor.codigo = codigo || motor.codigo; // Novo campo
 
-    // Atualizar imagem principal, se fornecida
     if (req.files['imagem'] && req.files['imagem'][0]) {
       if (motor.imagem) {
         const publicId = motor.imagem.split('/').pop().split('.')[0];
@@ -151,11 +147,9 @@ router.put('/:id', upload.fields([
       motor.imagem = req.files['imagem'][0].path;
     }
 
-    // Atualizar arquivos adicionais
     if (req.files['arquivos'] || arquivosParaManter) {
       const arquivosMantidos = arquivosParaManter ? JSON.parse(arquivosParaManter) : [];
 
-      // Remover arquivos não mantidos
       if (motor.arquivos && motor.arquivos.length > 0) {
         for (const arquivo of motor.arquivos) {
           if (!arquivosMantidos.includes(arquivo)) {
@@ -167,7 +161,6 @@ router.put('/:id', upload.fields([
 
       motor.arquivos = arquivosMantidos.filter(arquivo => motor.arquivos.includes(arquivo));
 
-      // Adicionar novos arquivos à subpasta
       if (req.files['arquivos']) {
         const subpasta = `motores/${motor._id}/adicionais`;
         const novosArquivos = [];
@@ -201,13 +194,11 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ erro: 'Motor não encontrado.' });
     }
 
-    // Remover imagem principal, se existir
     if (motor.imagem) {
       const publicId = motor.imagem.split('/').pop().split('.')[0];
       await cloudinary.uploader.destroy(`motores/${publicId}`);
     }
 
-    // Remover arquivos adicionais da subpasta
     if (motor.arquivos && motor.arquivos.length > 0) {
       for (const arquivo of motor.arquivos) {
         const publicId = arquivo.split('/').pop().split('.')[0];
