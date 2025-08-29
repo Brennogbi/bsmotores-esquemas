@@ -144,6 +144,9 @@ h1 {
     transition: background 0.3s;
 }
 
+.footer{
+    text-align: center;
+}
 .btn-editar:hover {
     background-color: #0056b3;
 }
